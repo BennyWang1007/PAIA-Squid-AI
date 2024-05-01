@@ -3,6 +3,8 @@ from stable_baselines3 import PPO
 from ml.constants import *
 from ml.utils import to_tile_map, to_tile
 
+MODEL = 1
+
 def dfs_best_path(tilemap, x, y, visited, cur_depth, max_depth, cur_score, best_score, cur_path, best_path):
 
     if x < 0 or x >= COL_NUM or y < 0 or y >= ROW_NUM or visited[x][y] or cur_depth > max_depth:
@@ -36,8 +38,11 @@ class MLPlay:
 
     def __init__(self,*args, **kwargs):
         print("Initial ml script")
-        # model1
-        self.ppo = PPO.load(R'models\ppo_swimming_squid_10x10_70_target_fixed2_512000step.zip')
+
+        if MODEL == 1:
+            self.ppo = PPO.load(R'models\ppo_swimming_squid_10x10_70_target_fixed2_896000step.zip')
+        elif MODEL == 2:
+            self.ppo = PPO.load(R'models\ppo_swimming_squid_10x10_70_target_fixed_1536000step.zip')
 
 
     def update(self, scene_info: dict, *args, **kwargs):
@@ -64,9 +69,12 @@ class MLPlay:
         tx, ty = self.get_target_loc(tile_x, tile_y, tilemap)
         self.tx , self.ty = tx * TILE_SIZE, ty * TILE_SIZE
 
-        # reserve the sign of each value in map, 0 -> 0, 1 -> 1, -1 -> -1
-        tilemap = [1 if i > 0 else -1 if i < 0 else 0 for i in tilemap]
-        return [tile_x, tile_y, tx - tile_x, ty - tile_y] + tilemap
+        if MODEL == 1:
+            # reserve the sign of each value in map, 0 -> 0, 1 -> 1, -1 -> -1
+            tilemap = [1 if i > 0 else -1 if i < 0 else 0 for i in tilemap]
+            return [tile_x, tile_y, tx - tile_x, ty - tile_y] + tilemap
+        elif MODEL == 2:
+            return [tile_x, tile_y, tx, ty] + tilemap
 
 
     def get_target_loc(self, tile_x, tile_y, tilemap) -> tuple[int, int]:
