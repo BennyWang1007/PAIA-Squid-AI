@@ -37,7 +37,7 @@ class MLPlay:
     def __init__(self,*args, **kwargs):
         print("Initial ml script")
         # model1
-        self.ppo = PPO.load(R'E:\ppo_model\ppo_swimming_squid_10x10_70_target_fixed2_512000step.zip')
+        self.ppo = PPO.load(R'models\ppo_swimming_squid_10x10_70_target_fixed2_512000step.zip')
 
 
     def update(self, scene_info: dict, *args, **kwargs):
